@@ -18,7 +18,7 @@ For firmware setup and thermostat behaviour, see:
 - [PCB source](easyeda/PCB_ESP32-Airco-NTC-Spoofer-PCB.json)
 - [EasyEDA import notes](easyeda/README.txt)
 
-### Human-readable design documents
+### Design documents
 
 - [Schematic PDF](docs/Schematic_ESP32-Airco-NTC-Spoofer.pdf)
 - [PCB PDF](docs/PCB_ESP32-Airco-NTC-Spoofer-PCB.pdf)
@@ -216,7 +216,7 @@ The editable source files are:
 - [`easyeda/SCH_ESP32-Airco-NTC-Spoofer-Schematic.json`](easyeda/SCH_ESP32-Airco-NTC-Spoofer-Schematic.json)
 - [`easyeda/PCB_ESP32-Airco-NTC-Spoofer-PCB.json`](easyeda/PCB_ESP32-Airco-NTC-Spoofer-PCB.json)
 
-No custom PCB footprints are required by the current design.
+No custom schematic symbols or PCB footprints are required by the current design.
 
 ### Opening the source in EasyEDA Standard
 
@@ -233,7 +233,7 @@ The PDFs, Gerbers, BOM, pick-and-place data, and OBJ model are generated outputs
 
 ## Schematic and PCB PDFs
 
-Human-readable exports are included so the design can be inspected without EasyEDA.
+PDF exports are included so the design can be inspected without EasyEDA.
 
 ### Schematic
 
@@ -253,7 +253,7 @@ The first boards were manufactured by JLCPCB using the following configuration:
 |---|---|
 | Base material | FR-4 |
 | Layer count | 4 |
-| Board dimensions | 71.29 mm × 71.78 mm |
+| Board dimensions | 31.29 mm × 57.78 mm |
 | PCB thickness | 1.6 mm |
 | Material Tg | TG135 |
 | Solder mask | Blue |
@@ -503,7 +503,7 @@ For released hardware revisions, record both a hardware revision and a repositor
 For example:
 
 ```text
-Hardware revision: Rev A
+Hardware revision: REV 1.0
 Repository release: v1.0.0
 ```
 
