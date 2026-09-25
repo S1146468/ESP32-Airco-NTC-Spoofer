@@ -1,3 +1,5 @@
+![PCB](images/pcb.png)
+
 # ESP32 Airco NTC Spoofer
 
 An ESP32-C3 based open-hardware controller for improving the temperature regulation of a portable air conditioner by taking control of its NTC temperature-sensor input.
