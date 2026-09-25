@@ -16,7 +16,7 @@ For firmware setup and thermostat behaviour, see:
 
 - [Schematic source](easyeda/SCH_ESP32-Airco-NTC-Spoofer-Schematic.json)
 - [PCB source](easyeda/PCB_ESP32-Airco-NTC-Spoofer-PCB.json)
-- [EasyEDA import notes](easyeda/README.txt)
+- [EasyEDA import notes](easyeda/README.md)
 
 ### Design documents
 
@@ -48,8 +48,7 @@ hardware/
 │   └── Schematic_ESP32-Airco-NTC-Spoofer.pdf
 ├── easyeda/
 │   ├── PCB_ESP32-Airco-NTC-Spoofer-PCB.json
-│   ├── SCH_ESP32-Airco-NTC-Spoofer-Schematic.json
-│   └── README.txt
+│   └── SCH_ESP32-Airco-NTC-Spoofer-Schematic.json
 ├── gerbers/
 │   ├── Gerber_ESP32-Airco-NTC-Spoofer.zip
 │   └── Gerber_Export/
