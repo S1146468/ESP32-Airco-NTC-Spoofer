@@ -188,7 +188,7 @@ For PCB details, component information, manufacturing settings, and hardware ver
 ```text
 ESP32-Airco-NTC-Spoofer/
 ├── README.md
-├── LICENSE
+├── LICENSE.md
 ├── LICENSES/
 │   ├── CERN-OHL-S-2.0.txt
 │   └── GPL-3.0-only.txt
@@ -291,4 +291,4 @@ This repository contains separately licensed firmware and hardware.
 | Firmware / software | GNU GPL v3 only (`GPL-3.0-only`) |
 | Hardware design | CERN Open Hardware Licence v2 - Strongly Reciprocal (`CERN-OHL-S-2.0`) |
 
-See [LICENSE](LICENSE) for the licensing overview and [`LICENSES/`](LICENSES/) for the full license texts.
+See [LICENSE.md](LICENSE.md) for the licensing overview and [`LICENSES/`](LICENSES/) for the full license texts.
