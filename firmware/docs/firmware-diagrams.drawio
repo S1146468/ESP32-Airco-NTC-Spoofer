@@ -1,1 +1,279 @@
-<mxfile host="app.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="ChatGPT" version="24.7.17"><diagram id="page-1" name="Firmware Architecture">&lt;mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"&gt;&lt;root&gt;&lt;mxCell id="0" /&gt;&lt;mxCell id="1" parent="0" /&gt;&lt;mxCell id="ha" value="Home Assistant&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Climate: mode + target&amp;lt;br&amp;gt;Room sensor 1&amp;lt;br&amp;gt;Room sensor 2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="60" y="140" width="280" height="220" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="esp" value="ESP32 / ESPHome" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;verticalAlign=top;" vertex="1" parent="1"&gt;&lt;mxGeometry x="430" y="80" width="540" height="520" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="sel" value="Airco Area selector&amp;lt;br&amp;gt;None / Room 1 / Room 2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="480" y="145" width="190" height="95" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="hain" value="HA inputs&amp;lt;br&amp;gt;HVAC mode&amp;lt;br&amp;gt;Target temperature" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="720" y="145" width="190" height="95" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="thermo" value="Local thermostat&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Selected room temperature&amp;lt;br&amp;gt;min_on_time / min_off_time&amp;lt;br&amp;gt;deadband / overrun" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="490" y="295" width="410" height="130" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="out" value="Output logic&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;COOL → 35 °C spoof&amp;lt;br&amp;gt;IDLE → 5 °C spoof&amp;lt;br&amp;gt;Inactive → original NTC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="490" y="475" width="410" height="105" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="pcb" value="PCB NTC switching&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;GPIO4 → original NTC&amp;lt;br&amp;gt;GPIO5 → NTC_5C&amp;lt;br&amp;gt;GPIO6 → NTC_35C" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="1050" y="145" width="300" height="250" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="ac" value="Portable AC controller&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Reads NTC resistance&amp;lt;br&amp;gt;Controls compressor internally" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="1050" y="500" width="300" height="120" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e1" value="room sensors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="ha" target="sel"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e2" value="mode + target" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="ha" target="hain"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e3" value="selected temp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="sel" target="thermo"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e4" value="mode / target" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="hain" target="thermo"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e5" value="cool / idle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="thermo" target="out"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e6" value="GPIO outputs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="out" target="pcb"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="e7" value="NTC resistance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="pcb" target="ac"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;</diagram><diagram id="page-2" name="Control State">&lt;mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"&gt;&lt;root&gt;&lt;mxCell id="0" /&gt;&lt;mxCell id="1" parent="0" /&gt;&lt;mxCell id="start" value="Boot / normal loop&amp;lt;br&amp;gt;update_all every update_interval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="510" y="70" width="360" height="75" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="check" value="Check external-control conditions&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Wi-Fi connected?&amp;lt;br&amp;gt;Selected sensor valid?&amp;lt;br&amp;gt;Area != None?&amp;lt;br&amp;gt;HA mode == cool?&amp;lt;br&amp;gt;Target valid?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="510" y="210" width="360" height="145" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="all" value="All conditions true?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="590" y="410" width="200" height="120" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="inactive" value="External control inactive&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Original NTC connected&amp;lt;br&amp;gt;5 °C OFF&amp;lt;br&amp;gt;35 °C OFF&amp;lt;br&amp;gt;Thermostat OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="80" y="610" width="340" height="150" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="sync" value="Synchronize thermostat&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Mode = COOL&amp;lt;br&amp;gt;Target = HA target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="510" y="610" width="360" height="110" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="state" value="Thermostat state?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="590" y="770" width="200" height="110" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="idle" value="IDLE&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Original NTC disconnected&amp;lt;br&amp;gt;5 °C ON&amp;lt;br&amp;gt;35 °C OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="80" y="790" width="340" height="120" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="cool" value="COOL&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Original NTC disconnected&amp;lt;br&amp;gt;35 °C ON&amp;lt;br&amp;gt;5 °C OFF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="1010" y="790" width="340" height="120" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="start" target="check"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="check" target="all"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c3" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="all" target="inactive"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c4" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="all" target="sync"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="sync" target="state"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c6" value="IDLE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="state" target="idle"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="c7" value="COOL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="state" target="cool"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;</diagram><diagram id="page-3" name="Update Sequence">&lt;mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"&gt;&lt;root&gt;&lt;mxCell id="0" /&gt;&lt;mxCell id="1" parent="0" /&gt;&lt;mxCell id="actor1" value="Interval / button" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="80" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="actor2" value="update_all" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="320" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="actor3" value="airco_active_state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="560" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="actor4" value="airco_set_temp_mode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="800" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="actor5" value="ESPHome thermostat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="1040" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="actor6" value="output_set / GPIO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1"&gt;&lt;mxGeometry x="1280" y="60" width="170" height="50" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m1" value="execute update_all" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor1" target="actor2"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m2" value="execute airco_active_state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor2" target="actor3"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m3" value="airco_active result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor3" target="actor2"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m4" value="execute airco_set_temp_mode" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor2" target="actor4"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m5" value="set mode + target" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor4" target="actor5"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m6" value="cool/idle action updates globals" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor5" target="actor4"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m7" value="sync complete" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor4" target="actor2"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m8" value="execute output_set" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor2" target="actor6"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;mxCell id="m9" value="apply NTC path" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="actor6" target="actor2"&gt;&lt;mxGeometry relative="1" as="geometry" /&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;</diagram></mxfile>
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" compressed="false" version="29.6.6" pages="3">
+  <diagram id="page-1" name="Firmware Architecture">
+    <mxGraphModel dx="2026" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="10" pageHeight="10" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ha" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7D887C;strokeColor=none;fontStyle=1;" value="Home Assistant&lt;br&gt;&lt;br&gt;Climate: mode + target&lt;br&gt;Room sensor 1&lt;br&gt;Room sensor 2" vertex="1">
+          <mxGeometry height="100" width="520" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="esp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#777777;strokeColor=none;fontStyle=1;verticalAlign=top;" value="ESP32 / ESPHome" vertex="1">
+          <mxGeometry height="520" width="520" x="40" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="sel" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6F6959;strokeColor=none;fontStyle=1;" value="Airco Area selector&lt;br&gt;None / Room 1 / Room 2" vertex="1">
+          <mxGeometry height="95" width="190" x="80" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="hain" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#716C5B;strokeColor=none;fontStyle=1;" value="HA inputs&lt;br&gt;HVAC mode&lt;br&gt;Target temperature" vertex="1">
+          <mxGeometry height="95" width="190" x="320" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="thermo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;" value="Local thermostat&lt;br&gt;&lt;br&gt;Selected room temperature&lt;br&gt;min_on_time / min_off_time&lt;br&gt;deadband / overrun" vertex="1">
+          <mxGeometry height="130" width="410" x="90" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="out" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#74605F;strokeColor=none;fontStyle=1;" value="Output logic&lt;br&gt;&lt;br&gt;COOL -&gt; 35 C spoof&lt;br&gt;IDLE -&gt; 5 C spoof&lt;br&gt;Inactive -&gt; original NTC" vertex="1">
+          <mxGeometry height="105" width="410" x="90" y="645" as="geometry" />
+        </mxCell>
+        <mxCell id="pcb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#736D77;strokeColor=none;fontStyle=1;" value="PCB NTC switching&lt;br&gt;&lt;br&gt;GPIO4 -&gt; original NTC&lt;br&gt;GPIO5 -&gt; NTC_5C&lt;br&gt;GPIO6 -&gt; NTC_35C" vertex="1">
+          <mxGeometry height="250" width="300" x="145" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="ac" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#74695D;strokeColor=none;fontStyle=1;" value="Portable AC controller&lt;br&gt;&lt;br&gt;Reads NTC resistance&lt;br&gt;Controls compressor internally" vertex="1">
+          <mxGeometry height="120" width="300" x="145" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="ha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="sel" value="room sensors">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="190" />
+              <mxPoint x="175" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="ha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="hain" value="mode + target">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="415" y="180" />
+              <mxPoint x="415" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="sel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="thermo" value="selected temp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="hain" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="thermo" value="mode / target">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="thermo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="out" value="cool / idle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="pcb" value="GPIO outputs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="pcb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" target="ac" value="NTC resistance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-2" name="Control State">
+    <mxGraphModel dx="2391" dy="1382" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="10" pageHeight="10" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#696F79;strokeColor=none;fontStyle=1;" value="Boot / normal loop&lt;br&gt;update_all every update_interval" vertex="1">
+          <mxGeometry height="80" width="240" x="300" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="check" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#797361;strokeColor=none;fontStyle=1;" value="Check external-control conditions&lt;br&gt;&lt;br&gt;Wi-Fi connected?&lt;br&gt;Selected sensor valid?&lt;br&gt;Area != None?&lt;br&gt;HA mode == cool?&lt;br&gt;Target valid?" vertex="1">
+          <mxGeometry height="120" width="240" x="300" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="all" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#746E5D;strokeColor=none;fontStyle=1;" value="All conditions true?" vertex="1">
+          <mxGeometry height="120" width="220" x="310" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="inactive" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646C64;strokeColor=none;fontStyle=1;gradientColor=none;" value="External control inactive&lt;br&gt;&lt;br&gt;Original NTC connected&lt;br&gt;5 C OFF&lt;br&gt;35 C OFF&lt;br&gt;Thermostat OFF" vertex="1">
+          <mxGeometry height="120" width="200" x="40" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="sync" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646974;strokeColor=none;fontStyle=1;" value="Synchronize thermostat&lt;br&gt;&lt;br&gt;Mode = COOL&lt;br&gt;Target = HA target" vertex="1">
+          <mxGeometry height="110" width="240" x="300" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="state" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#6C6758;strokeColor=none;fontStyle=1;" value="Thermostat state?" vertex="1">
+          <mxGeometry height="120" width="220" x="310" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="idle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#635E65;strokeColor=none;fontStyle=1;" value="IDLE&lt;br&gt;&lt;br&gt;Original NTC disconnected&lt;br&gt;5 C ON&lt;br&gt;35 C OFF" vertex="1">
+          <mxGeometry height="100" width="200" x="40" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="cool" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#796564;strokeColor=none;fontStyle=1;" value="COOL&lt;br&gt;&lt;br&gt;Original NTC disconnected&lt;br&gt;35 C ON&lt;br&gt;5 C OFF" vertex="1">
+          <mxGeometry height="100" width="200" x="600" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="check" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" edge="1" parent="1" source="check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="all" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" edge="1" parent="1" source="all" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="inactive" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" edge="1" parent="1" source="all" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="sync" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" edge="1" parent="1" source="sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="state" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" edge="1" parent="1" source="state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="idle" value="IDLE">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" edge="1" parent="1" source="state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=default;" target="cool" value="COOL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-3" name="Update Sequence">
+    <mxGraphModel dx="1886" dy="1039" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="10" pageHeight="10" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="Interval / button" vertex="1">
+          <mxGeometry height="55" width="180" x="180" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-2" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="270" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-3" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="270" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-4" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-2" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="update_all" vertex="1">
+          <mxGeometry height="55" width="180" x="430" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-6" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-7" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-8" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-6" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="airco_active_state" vertex="1">
+          <mxGeometry height="55" width="180" x="680" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-10" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="770" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-11" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="770" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-12" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-10" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="airco_set_temp_mode" vertex="1">
+          <mxGeometry height="55" width="180" x="930" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-14" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-15" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-16" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-14" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-15" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="ESPHome thermostat" vertex="1">
+          <mxGeometry height="55" width="180" x="1180" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-18" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1270" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-19" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1270" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-20" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-18" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#646B74;strokeColor=none;fontStyle=1;align=center;verticalAlign=middle;" value="output_set / GPIO" vertex="1">
+          <mxGeometry height="55" width="180" x="1430" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-22" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1520" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-23" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1520" y="1015" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-24" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-22" style="edgeStyle=none;html=1;dashed=1;dashPattern=3 3;strokeColor=#808080;endArrow=none;startArrow=none;" target="u03Z9aeVWo_cRrwWHwmF-23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-25" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="270" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-26" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-27" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-25" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-26" value="execute update_all">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-28" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-29" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="770" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-30" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-28" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-29" value="execute airco_active_state">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-31" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="770" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-32" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-33" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-31" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-32" value="airco_active = true / false">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-34" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-35" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-36" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-34" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-35" value="execute airco_set_temp_mode">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-37" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-38" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1270" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-39" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-37" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-38" value="set mode + target">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-40" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1270" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-41" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-42" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-40" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-41" value="cool_action / idle_action updates globals">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-43" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1020" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-44" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-45" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-43" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-44" value="thermostat sync complete">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-46" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="845" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-47" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1520" y="845" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-48" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-46" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-47" value="execute output_set">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-49" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1520" y="925" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-50" parent="1" style="shape=ellipse;perimeter=ellipsePerimeter;opacity=0;fillOpacity=0;strokeOpacity=0;" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="520" y="925" as="geometry" />
+        </mxCell>
+        <mxCell id="u03Z9aeVWo_cRrwWHwmF-51" edge="1" parent="1" source="u03Z9aeVWo_cRrwWHwmF-49" style="edgeStyle=none;html=1;strokeColor=#4d4d4d;endArrow=block;endFill=1;startArrow=none;fontColor=#222222;labelBackgroundColor=#ffffff;" target="u03Z9aeVWo_cRrwWHwmF-50" value="apply original / 5 C / 35 C NTC path">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
