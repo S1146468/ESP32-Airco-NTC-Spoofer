@@ -1,0 +1,511 @@
+# ESP32 Airco NTC Spoofer - Single Room Sensor
+#
+# This variant is intended for installations that use one fixed room
+# temperature sensor. It removes the area selector and second room sensor.
+#
+# GPIO mapping:
+#   GPIO4 / XIAO D2 -> original NTC path
+#   GPIO5 / XIAO D3 -> 5 C spoof path
+#   GPIO6 / XIAO D4 -> 35 C spoof path
+#
+# Fail-safe state:
+#   Original NTC connected
+#   5 C spoof disconnected
+#   35 C spoof disconnected
+#
+# Spoof control is enabled only when:
+#   * Wi-Fi is connected
+#   * Home Assistant is connected to the ESPHome API
+#   * the room-temperature sensor is valid
+#   * the Home Assistant climate entity is in COOL mode
+#   * the target temperature is valid
+#
+# Required secrets:
+#   wifi_ssid
+#   wifi_password
+#   api_encryption_key
+#   ota_password
+
+substitutions:
+  # Device identity
+  device_name: "esp32-airco-ntc-spoofer"
+  friendly_name: "ESP32 Airco NTC Spoofer"
+
+  # Home Assistant entities
+  room_temperature_entity: "sensor.room_temperature"
+  airco_climate_entity: "climate.air_conditioner"
+
+  # Control-loop interval
+  update_interval: "5s"
+
+  # Compressor protection
+  min_off_time: "4min"
+  min_on_time: "6min"
+  min_idle_time: "0s"
+
+  # Thermostat hysteresis
+  cool_deadband: "0.1 °C"
+  cool_overrun: "0.35 °C"
+
+
+# ---------------------------------------------------------------------------
+# ESPHOME / MCU
+# ---------------------------------------------------------------------------
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+
+  # Restore the original NTC after the GPIO switches have initialized.
+  on_boot:
+    - priority: 700
+      then:
+        - script.execute: restore_original_ntc
+
+  # Try to restore the original NTC during graceful shutdown / OTA reboot.
+  on_shutdown:
+    - priority: 700
+      then:
+        - script.execute: restore_original_ntc
+
+  platformio_options:
+    board_build.flash_mode: dio
+
+esp32:
+  board: seeed_xiao_esp32c3
+  framework:
+    type: arduino
+
+
+# ---------------------------------------------------------------------------
+# LOGGING / API / OTA
+# ---------------------------------------------------------------------------
+
+logger:
+  level: WARN
+
+api:
+  id: api_server
+
+  encryption:
+    key: !secret api_encryption_key
+
+  # Home Assistant disconnects are handled by the fail-safe control logic.
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+
+# ---------------------------------------------------------------------------
+# WI-FI
+# ---------------------------------------------------------------------------
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  power_save_mode: none
+  domain: .local
+
+  # Optional static IP:
+  #
+  # manual_ip:
+  #   static_ip: !secret device_static_ip
+  #   gateway: !secret gateway_ip
+  #   subnet: !secret subnet
+
+
+# ---------------------------------------------------------------------------
+# INTERNAL STATE
+# ---------------------------------------------------------------------------
+
+globals:
+  - id: airco_active
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+  - id: room_temperature_valid
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+  - id: airco_cooling_mode
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+  - id: airco_target_temperature_valid
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+  - id: current_state_ntc_5c
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+  - id: current_state_ntc_35c
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+
+# ---------------------------------------------------------------------------
+# PHYSICAL NTC OUTPUTS
+# ---------------------------------------------------------------------------
+#
+# The raw GPIO outputs are internal so they cannot be manually toggled from
+# Home Assistant.
+
+switch:
+  # Original NTC path.
+  #
+  # Logical ON is the safe state.
+  # Because inverted=true, logical ON drives GPIO4 LOW.
+  - platform: gpio
+    pin: GPIO04
+    id: ntc_original_output
+    inverted: true
+    internal: true
+    restore_mode: ALWAYS_ON
+
+  # Cold spoof path.
+  - platform: gpio
+    pin: GPIO05
+    id: ntc_5c_output
+    inverted: false
+    internal: true
+    restore_mode: ALWAYS_OFF
+
+  # Warm spoof path.
+  - platform: gpio
+    pin: GPIO06
+    id: ntc_35c_output
+    inverted: false
+    internal: true
+    restore_mode: ALWAYS_OFF
+
+
+# ---------------------------------------------------------------------------
+# HOME ASSISTANT INPUTS
+# ---------------------------------------------------------------------------
+
+sensor:
+  # Fixed room-temperature sensor used by the local thermostat.
+  - platform: homeassistant
+    id: room_temperature
+    entity_id: ${room_temperature_entity}
+    accuracy_decimals: 1
+
+    on_value:
+      then:
+        - lambda: |-
+            id(room_temperature_valid) = !isnan(x);
+        - script.execute: update_all
+
+  # Target temperature from the Home Assistant climate entity.
+  - platform: homeassistant
+    id: ha_airco_target_temperature
+    entity_id: ${airco_climate_entity}
+    attribute: temperature
+    accuracy_decimals: 1
+
+    on_value:
+      then:
+        - lambda: |-
+            id(airco_target_temperature_valid) = !isnan(x);
+        - script.execute: update_all
+
+  # Diagnostic copy of the imported room temperature.
+  - platform: template
+    id: room_temperature_debug
+    name: "Source Room Temperature"
+    entity_category: diagnostic
+    accuracy_decimals: 1
+    state_class: measurement
+    device_class: temperature
+    unit_of_measurement: "°C"
+    update_interval: ${update_interval}
+    lambda: |-
+      return id(room_temperature).state;
+
+  # Diagnostic copy of the imported target temperature.
+  - platform: template
+    id: target_temperature_debug
+    name: "Source Target Temperature"
+    entity_category: diagnostic
+    accuracy_decimals: 1
+    state_class: measurement
+    device_class: temperature
+    unit_of_measurement: "°C"
+    update_interval: ${update_interval}
+    lambda: |-
+      return id(ha_airco_target_temperature).state;
+
+
+text_sensor:
+  # HVAC mode from the same Home Assistant climate entity.
+  - platform: homeassistant
+    id: ha_airco_hvac_mode
+    entity_id: ${airco_climate_entity}
+
+    on_value:
+      then:
+        - lambda: |-
+            id(airco_cooling_mode) = (x == "cool");
+        - script.execute: update_all
+
+  - platform: template
+    id: hvac_mode_debug
+    name: "Source HVAC Mode"
+    entity_category: diagnostic
+    update_interval: ${update_interval}
+    lambda: |-
+      return id(ha_airco_hvac_mode).state;
+
+
+# ---------------------------------------------------------------------------
+# LOCAL THERMOSTAT
+# ---------------------------------------------------------------------------
+#
+# Example with a 22.0 C target:
+#
+#   cooling starts around 22.1 C
+#   cooling stops around 21.65 C
+#
+# min_cooling_off_time and min_cooling_run_time provide additional protection
+# against rapid compressor cycling.
+
+climate:
+  - platform: thermostat
+    id: airco_controller
+    name: "Airco Controller"
+
+    sensor: room_temperature
+
+    min_cooling_off_time: ${min_off_time}
+    min_cooling_run_time: ${min_on_time}
+    min_idle_time: ${min_idle_time}
+
+    cool_deadband: ${cool_deadband}
+    cool_overrun: ${cool_overrun}
+
+    # Cooling required:
+    # select the warm spoof state so the air conditioner keeps cooling.
+    cool_action:
+      - lambda: |-
+          id(current_state_ntc_35c) = true;
+          id(current_state_ntc_5c) = false;
+      - script.execute: apply_outputs
+
+    # Target satisfied:
+    # select the cold spoof state so the air conditioner stops cooling.
+    idle_action:
+      - lambda: |-
+          id(current_state_ntc_5c) = true;
+          id(current_state_ntc_35c) = false;
+      - script.execute: apply_outputs
+
+
+# ---------------------------------------------------------------------------
+# CONTROL LOGIC
+# ---------------------------------------------------------------------------
+
+script:
+  # Main control cycle.
+  - id: update_all
+    mode: restart
+    then:
+      - script.execute: evaluate_control_state
+      - script.execute: sync_thermostat
+      - script.execute: apply_outputs
+
+  # Determine whether spoof control is allowed.
+  - id: evaluate_control_state
+    mode: restart
+    then:
+      - if:
+          condition:
+            and:
+              - wifi.connected:
+              - api.connected:
+                  state_subscription_only: true
+          then:
+            - lambda: |-
+                bool active = true;
+
+                if (!id(room_temperature_valid)) {
+                  active = false;
+                }
+
+                if (!id(airco_cooling_mode)) {
+                  active = false;
+                }
+
+                if (!id(airco_target_temperature_valid)) {
+                  active = false;
+                }
+
+                id(airco_active) = active;
+
+          else:
+            - lambda: |-
+                id(airco_active) = false;
+
+  # Synchronize the local ESPHome thermostat with the Home Assistant climate
+  # target and mode.
+  - id: sync_thermostat
+    mode: restart
+    then:
+      - lambda: |-
+          auto call = id(airco_controller).make_call();
+
+          if (id(airco_active)) {
+            const float target = id(ha_airco_target_temperature).state;
+
+            if (!isnan(target)) {
+              call.set_mode("COOL");
+              call.set_target_temperature(target);
+            } else {
+              call.set_mode("OFF");
+            }
+          } else {
+            call.set_mode("OFF");
+          }
+
+          call.perform();
+
+  # Apply the requested NTC state.
+  #
+  # The original NTC is disconnected only when:
+  #   * external control is active; and
+  #   * exactly one spoof state is selected.
+  #
+  # If both spoof states are true or both are false, the firmware restores the
+  # original NTC.
+  - id: apply_outputs
+    mode: restart
+    then:
+      - lambda: |-
+          if (!id(airco_active)) {
+            id(current_state_ntc_5c) = false;
+            id(current_state_ntc_35c) = false;
+
+            id(ntc_original_output).turn_on();
+            id(ntc_5c_output).turn_off();
+            id(ntc_35c_output).turn_off();
+            return;
+          }
+
+          const bool use_5c = id(current_state_ntc_5c);
+          const bool use_35c = id(current_state_ntc_35c);
+
+          // Invalid state: both selected or neither selected.
+          if (use_5c == use_35c) {
+            id(ntc_original_output).turn_on();
+            id(ntc_5c_output).turn_off();
+            id(ntc_35c_output).turn_off();
+            return;
+          }
+
+          // Valid spoof state.
+          id(ntc_original_output).turn_off();
+
+          if (use_5c) {
+            id(ntc_5c_output).turn_on();
+            id(ntc_35c_output).turn_off();
+          } else {
+            id(ntc_5c_output).turn_off();
+            id(ntc_35c_output).turn_on();
+          }
+
+  # Explicit safe state.
+  - id: restore_original_ntc
+    mode: restart
+    then:
+      - lambda: |-
+          id(airco_active) = false;
+          id(current_state_ntc_5c) = false;
+          id(current_state_ntc_35c) = false;
+
+          id(ntc_original_output).turn_on();
+          id(ntc_5c_output).turn_off();
+          id(ntc_35c_output).turn_off();
+
+
+# ---------------------------------------------------------------------------
+# PERIODIC CONTROL LOOP
+# ---------------------------------------------------------------------------
+
+interval:
+  - id: control_interval
+    interval: ${update_interval}
+    then:
+      - script.execute: update_all
+
+
+# ---------------------------------------------------------------------------
+# USER / DIAGNOSTIC ENTITIES
+# ---------------------------------------------------------------------------
+
+button:
+  - platform: restart
+    name: "Restart"
+    entity_category: config
+
+  - platform: template
+    name: "Update Control"
+    entity_category: diagnostic
+    on_press:
+      - script.execute: update_all
+
+
+binary_sensor:
+  - platform: status
+    name: "Device Status"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Control Active"
+    entity_category: diagnostic
+    lambda: |-
+      return id(airco_active);
+
+  - platform: template
+    name: "Room Temperature Valid"
+    entity_category: diagnostic
+    lambda: |-
+      return id(room_temperature_valid);
+
+  - platform: template
+    name: "Cooling Mode Requested"
+    entity_category: diagnostic
+    lambda: |-
+      return id(airco_cooling_mode);
+
+  - platform: template
+    name: "Target Temperature Valid"
+    entity_category: diagnostic
+    lambda: |-
+      return id(airco_target_temperature_valid);
+
+  - platform: template
+    name: "Original NTC Connected"
+    entity_category: diagnostic
+    lambda: |-
+      return id(ntc_original_output).state;
+
+  - platform: template
+    name: "NTC 5C Spoof Active"
+    entity_category: diagnostic
+    lambda: |-
+      return id(ntc_5c_output).state;
+
+  - platform: template
+    name: "NTC 35C Spoof Active"
+    entity_category: diagnostic
+    lambda: |-
+      return id(ntc_35c_output).state;
