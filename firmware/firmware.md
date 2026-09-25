@@ -713,3 +713,10 @@ Before relying on the controller unattended:
 ESPHome thermostat documentation:
 
 <https://esphome.io/components/climate/thermostat/>
+
+## License
+
+The firmware in this directory is licensed under the
+**GNU General Public License version 3 only (GPL-3.0-only)**.
+
+See [GPL-3.0-only.txt](../LICENSES/GPL-3.0-only.txt).
