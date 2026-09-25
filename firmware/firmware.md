@@ -680,13 +680,13 @@ wifi_password: "YOUR_WIFI_PASSWORD"
 api_encryption_key: "YOUR_API_ENCRYPTION_KEY"
 ota_password: "YOUR_OTA_PASSWORD"
 
-# Required by the current two-room configuration:
+# Optional, when manual_ip is enabled:
 device_static_ip: "192.168.1.50"
 gateway_ip: "192.168.1.1"
 subnet: "255.255.255.0"
 ```
 
-The single-room configuration uses DHCP by default. Its optional static-IP block can be enabled if required.
+Both firmware configurations use DHCP by default. Static IP configuration can be enabled if required.
 
 ## Commissioning checklist
 
@@ -713,10 +713,3 @@ Before relying on the controller unattended:
 ESPHome thermostat documentation:
 
 <https://esphome.io/components/climate/thermostat/>
-
-## License
-
-The firmware in this directory is licensed under the
-**GNU General Public License version 3 only (GPL-3.0-only)**.
-
-See [GPL-3.0-only.txt](../LICENSES/GPL-3.0-only.txt).
